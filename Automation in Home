@@ -1,0 +1,52 @@
+
+const int irSensorEntryPin = 2;      // First IR sensor at entry
+const int irSensorCenterPin = 3;     // Second IR sensor at the center of the room
+const int relayLightPin = 7;         // Relay output for light control
+const int relayFanPin = 8;           // Relay output for fan control
+
+void setup() 
+{
+  // Initialize sensor and relay pins
+  pinMode(irSensorEntryPin, INPUT);        // First IR sensor as input
+  pinMode(irSensorCenterPin, INPUT);       // Second IR sensor as input
+  pinMode(relayLightPin, OUTPUT);          // Relay for light as output
+  pinMode(relayFanPin, OUTPUT);            // Relay for fan as output
+  
+  // Set initial states of relays to LOW (off)
+  digitalWrite(relayLightPin, LOW); 
+  digitalWrite(relayFanPin, LOW);
+
+  // Begin serial communication for debugging
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  int irSensorEntryState = digitalRead(irSensorEntryPin);
+  int irSensorCenterState = digitalRead(irSensorCenterPin);
+
+  if (irSensorEntryState == HIGH) { // If the entry IR sensor detects a person
+    // Turn on the light
+    digitalWrite(relayLightPin, HIGH);
+    Serial.println("Person detected at entry! Light is ON.");
+  } 
+  else 
+{ // If no one is at entry, turn off the light
+    digitalWrite(relayLightPin, LOW);
+    Serial.println("No person at entry. Light is OFF.");
+  }
+
+  if (irSensorCenterState == HIGH)
+{ // If the center IR sensor detects a person
+    // Turn on the fan
+    digitalWrite(relayFanPin, HIGH);
+    Serial.println("Person detected at center! Fan is ON.");
+  } 
+  else { // If no one is at center, turn off the fan
+    digitalWrite(relayFanPin, LOW);
+    Serial.println("No person at center. Fan is OFF.");
+  }
+
+  // Short delay to avoid sensor bouncing
+  delay(500);
+}
